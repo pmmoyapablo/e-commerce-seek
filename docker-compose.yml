@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+
+  account-service:
+    container_name: mcs_account-service
+    image: pm44019/mcs_account-service:v1.0.2
+    build:
+      context: .
+      dockerfile: mcs_account-service/Dockerfile
+    depends_on:
+      - db-mysql-acount
+      - eureka-server
+      - rabbitmq
+  
+  transaction-service:
+    container_name: mcs_transaction-service
+    image: pm44019/mcs_transaction-service:v1.0.3
+    build:
+      context: .
+      dockerfile: mcs_transaction-service/Dockerfile
+    depends_on:
+      - db-postgres-transaction
+      - eureka-server
+
+  eureka-server:
+    container_name: eureka-server
+    image: pm44019/eureka-server:latest
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+  
+  api-gateway:
+    container_name: api-gateway
+    image: pm44019/api-gateway:latest
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    depends_on:
+      - eureka-server
+
+  db-mysql-acount:
+    image: mysql:latest
+    restart: always
+  
+  db-postgres-transaction:
+    image: postgres:alpine
+    restart: always
+  
+  rabbitmq:
+    image: rabbitmq:3-management

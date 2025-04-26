@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+
+  account-service:
+    ports:
+      - 8081:8081
+    networks:
+      - my-network
+  
+  transaction-service:
+    ports:
+      - 8082:8082
+    networks:
+      - my-network
+  
+  eureka-server:
+    ports:
+      - "8080:8080"
+    networks:
+        - my-network
+  
+  api-gateway:
+    ports:
+      - "8000:8000"
+    depends_on:
+      - eureka-server
+    networks:
+        - my-network
+  
+  db-mysql-acount:
+    environment:
+      MYSQL_ROOT_PASSWORD: 'p@ssw0rd'
+      MYSQL_DATABASE: 'account_db'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db-acount:/var/lib/mysql
+    networks:
+        - my-network
+  
+  db-postgres-transaction:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - my-db-transaction:/var/lib/postgresql
+    ports:
+      - '5550:5432'
+    networks:
+        - my-network
+  
+  rabbitmq:
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+        - my-network
+  
+volumes:
+  my-db-acount:
+  my-db-transaction:
+  
+networks:
+  my-network:
+    driver: bridge
