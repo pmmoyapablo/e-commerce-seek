@@ -1,4 +1,4 @@
-package com.vectora.transactionservice.domain.model;
+package com.seek.products.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import com.vectora.transactionservice.domain.exception.TransactionNotFoundExcept
 @Data // Lombok: getters, setters, toString, equals, hashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction {
+public class Product {
     private Long id;
     private Long fromAccount;
     private Long toAccount;
@@ -17,7 +17,7 @@ public class Transaction {
     private Date fecha;
 
     // Constructor sin ID para creación
-    public Transaction(Long fromAccount, Long toAccount, double monto) {
+    public Product(Long fromAccount, Long toAccount, double monto) {
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
         this.monto = monto;
