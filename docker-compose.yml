@@ -2,25 +2,34 @@ version: '3.8'
 
 services:
 
-  account-service:
-    container_name: mcs_account-service
-    image: pm44019/mcs_account-service:v1.0.2
+  user-service:
+    container_name: mcs_users-service
+    image: pm44019/mcs_users-service:v1.0.1
     build:
       context: .
-      dockerfile: mcs_account-service/Dockerfile
+      dockerfile: mcs_users-service/Dockerfile
     depends_on:
-      - db-mysql-acount
+      - db-postgres-users
       - eureka-server
-      - rabbitmq
   
-  transaction-service:
-    container_name: mcs_transaction-service
-    image: pm44019/mcs_transaction-service:v1.0.3
+  order-service:
+    container_name: mcs_orders-service
+    image: pm44019/mcs_orders-service:v1.0.1
     build:
       context: .
-      dockerfile: mcs_transaction-service/Dockerfile
+      dockerfile: mcs_orders-service/Dockerfile
     depends_on:
-      - db-postgres-transaction
+      - db-mysql-orders
+      - eureka-server
+  
+  product-service:
+    container_name: mcs_products-service
+    image: pm44019/mcs_products-service:v1.0.1
+    build:
+      context: .
+      dockerfile: mcs_products-service/Dockerfile
+    depends_on:
+      - db-oracle-product
       - eureka-server
 
   eureka-server:
@@ -38,13 +47,35 @@ services:
       dockerfile: api-gateway/Dockerfile
     depends_on:
       - eureka-server
+  
+  bff-web:
+    container_name: bff_web-service
+    image: pm44019/bff_web-service:latest
+    build:
+      context: .
+      dockerfile: bff_web-service/Dockerfile
+    depends_on:
+      - eureka-server
+  
+  bff-mobile:
+    container_name: bff_mobile-service
+    image: pm44019/bff_mobile-service:latest
+    build:
+      context: .
+      dockerfile: bff_mobile-service/Dockerfile
+    depends_on:
+      - eureka-server
 
-  db-mysql-acount:
+  db-mysql-orders:
     image: mysql:latest
     restart: always
   
-  db-postgres-transaction:
+  db-postgres-users:
     image: postgres:alpine
+    restart: always
+  
+  db-oracle-product:
+    image: container-registry.oracle.com/database/enterprise:latest
     restart: always
   
   rabbitmq:

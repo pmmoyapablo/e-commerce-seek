@@ -2,15 +2,33 @@ version: '3.8'
 
 services:
 
-  account-service:
+  user-service:
     ports:
       - 8081:8081
     networks:
       - my-network
   
-  transaction-service:
+  product-service:
     ports:
       - 8082:8082
+    networks:
+      - my-network
+  
+  order-service:
+    ports:
+      - 8083:8083
+    networks:
+      - my-network
+  
+  bff-mobile:
+    ports:
+      - 8002:8002
+    networks:
+      - my-network
+  
+  bff-web:
+    ports:
+      - 8001:8001
     networks:
       - my-network
   
@@ -28,27 +46,40 @@ services:
     networks:
         - my-network
   
-  db-mysql-acount:
+  db-mysql-orders:
     environment:
       MYSQL_ROOT_PASSWORD: 'p@ssw0rd'
-      MYSQL_DATABASE: 'account_db'
+      MYSQL_DATABASE: 'orders'
     ports:
       - '3306:3306'
     expose:
       - '3306'
     volumes:
-      - my-db-acount:/var/lib/mysql
+      - my-db-order:/var/lib/mysql
     networks:
         - my-network
   
-  db-postgres-transaction:
+  db-postgres-users:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - my-db-transaction:/var/lib/postgresql
+      - my-db-user:/var/lib/postgresql
     ports:
       - '5550:5432'
+    networks:
+        - my-network
+  
+  db-oracle-product:
+    environment:
+      - ORACLE_SID=ORCLCDB
+      - ORACLE_PDB=ORCLPDB1
+      - ORACLE_PWD=Oracle_123
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - oracle-backup:/opt/oracle/backup
+    ports:
+      - '1521:1521'
     networks:
         - my-network
   
@@ -63,8 +94,10 @@ services:
         - my-network
   
 volumes:
-  my-db-acount:
-  my-db-transaction:
+  my-db-order:
+  my-db-user:
+  oracle-data:
+  oracle-backup:
   
 networks:
   my-network:
