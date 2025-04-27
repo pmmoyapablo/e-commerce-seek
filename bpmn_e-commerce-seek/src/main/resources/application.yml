@@ -1,0 +1,3 @@
+api:
+  catalogo:
+    url: http://mi-api-catalogo.servicio.local/v1

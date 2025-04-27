@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <bpmn:process id="procesoActualizacionInventarioPrecio" name="Proceso de Actualización de Inventario y Precios" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Inicio Actualización">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_IngresarDatos" name="Ingresar Datos de Actualización" camunda:formKey="embedded:app:forms/form-ingreso-datos.html" camunda:assignee="demo">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_IngresarDatos" />
+    <bpmn:scriptTask id="Task_ValidarDatos" name="Validar Datos Ingresados" scriptFormat="groovy">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:script><![CDATA[
+        // Acceder a las variables del proceso
+        def productId = execution.getVariable("productId")
+        def newQuantity = execution.getVariable("newQuantity")
+        def newPrice = execution.getVariable("newPrice")
+        def validationErrors = []
+
+        // Validaciones básicas
+        if (productId == null || productId.trim().isEmpty()) {
+          validationErrors.add("El ID del Producto es obligatorio.")
+        }
+        if (newQuantity == null && newPrice == null) {
+           validationErrors.add("Debe proporcionar al menos una nueva cantidad o un nuevo precio.")
+        }
+        if (newQuantity != null && newQuantity < 0) {
+          validationErrors.add("La cantidad no puede ser negativa.")
+        }
+        if (newPrice != null && newPrice <= 0) {
+          validationErrors.add("El precio debe ser un valor positivo.")
+        }
+
+        // Si hay errores, lanzar un error BPMN para detener o manejar
+        if (!validationErrors.isEmpty()) {
+          // Opcional: Podrías poner los errores en una variable para mostrarlos
+           execution.setVariable("validationErrorMessage", String.join(" ", validationErrors))
+           // Lanzar un error BPMN que puede ser capturado por un Boundary Event si quieres un manejo más elegante
+           throw new org.camunda.bpm.engine.delegate.BpmnError("VALIDATION_ERROR", String.join(" ", validationErrors))
+           // Alternativa simple (si no usas Boundary Event): Parar aquí o dirigir a un fin de error (requiere otro gateway)
+           // execution.setVariable("updateStatus", "FAILED") // Necesitaría un gateway justo después
+        } else {
+            // Limpiar mensaje de error si la validación pasa
+            execution.removeVariable("validationErrorMessage")
+            // Asegurarse que las variables numéricas son del tipo correcto si vienen del form como String
+            if (newQuantity != null) execution.setVariable("newQuantity", new Long(newQuantity.toString()))
+            if (newPrice != null) execution.setVariable("newPrice", new Double(newPrice.toString()))
+        }
+      ]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_IngresarDatos" targetRef="Task_ValidarDatos" />
+    <bpmn:serviceTask id="Task_LlamarAPI" name="Llamar API Catálogo Productos" camunda:delegateExpression="${actualizarProductoDelegate}">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_ValidarDatos" targetRef="Task_LlamarAPI" />
+    <bpmn:exclusiveGateway id="Gateway_Exito" name="¿Actualización Exitosa?">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_Success</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Failure</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_LlamarAPI" targetRef="Gateway_Exito" />
+    <bpmn:endEvent id="EndEvent_Success" name="Actualización Completada">
+      <bpmn:incoming>Flow_Success</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_Success" name="Sí" sourceRef="Gateway_Exito" targetRef="EndEvent_Success">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${updateStatus == 'SUCCESS'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="EndEvent_Failure" name="Error en Actualización">
+       <bpmn:incoming>Flow_Failure</bpmn:incoming>
+       <!-- Opcional: Definir un Error específico -->
+       <!-- <bpmn:errorEventDefinition id="ErrorEventDefinition_API" errorRef="Error_API_FAILURE" /> -->
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_Failure" name="No" sourceRef="Gateway_Exito" targetRef="EndEvent_Failure">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${updateStatus == 'FAILED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <!-- Opcional: Definición del Error BPMN usado en Script Task -->
+    <!-- <bpmn:error id="Error_VALIDATION" name="Error de Validación" errorCode="VALIDATION_ERROR" /> -->
+    <!-- <bpmn:error id="Error_API_FAILURE" name="Error API" errorCode="API_FAILURE" /> -->
+
+  </bpmn:process>
+
+  <!-- Definiciones visuales (BPMNDI) omitidas por brevedad -->
+  <!-- Asegúrate de generar el diagrama visual con Camunda Modeler -->
+
+</bpmn:definitions>

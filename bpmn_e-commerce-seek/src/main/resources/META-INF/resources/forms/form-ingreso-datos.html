@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Formulario de Actualización de Producto</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Actualizar Inventario y Precio de Producto</h2>
+    <form role="form">
+
+      <div class="form-group">
+        <label for="productId">ID del Producto (SKU)</label>
+        <input type="text"
+               class="form-control"
+               id="productId"
+               name="productId"
+               cam-variable-name="productId"
+               cam-variable-type="String"
+               required />
+        <div class="invalid-feedback">Por favor, ingrese el ID del producto.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="newQuantity">Nueva Cantidad en Inventario (Opcional)</label>
+        <input type="number"
+               class="form-control"
+               id="newQuantity"
+               name="newQuantity"
+               cam-variable-name="newQuantity"
+               cam-variable-type="Long"
+               min="0" />
+         <small class="form-text text-muted">Dejar vacío si no desea actualizar la cantidad.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="newPrice">Nuevo Precio (Opcional)</label>
+        <input type="number"
+               step="0.01"
+               class="form-control"
+               id="newPrice"
+               name="newPrice"
+               cam-variable-name="newPrice"
+               cam-variable-type="Double"
+               min="0.01" />
+         <small class="form-text text-muted">Dejar vacío si no desea actualizar el precio.</small>
+      </div>
+
+       <!-- Campo oculto para manejar el caso donde ambos opcionales están vacíos (validación en script) -->
+       <input type="hidden" cam-variable-name="formSubmitted" cam-variable-type="Boolean" value="true" />
+
+      <!-- Opcional: Mostrar mensaje de error de validación del Script Task si volvemos a la tarea -->
+      <div class="alert alert-danger"
+           role="alert"
+           cam-if-variable-exists="validationErrorMessage">
+         <strong>Error de Validación:</strong> <span cam-variable-name="validationErrorMessage"></span>
+      </div>
+
+      <script cam-script type="text/form-script">
+        // Puedes añadir lógica JS aquí si necesitas validación del lado del cliente más compleja
+        // o interacciones dinámicas en el formulario.
+
+        // Ejemplo: Asegurarse de que al menos uno de los campos opcionales tenga valor al enviar
+        // (Aunque la validación principal está en el Script Task Groovy)
+        /*
+        camForm.on('submit', function(evt) {
+          var quantity = $('input[name="newQuantity"]').val();
+          var price = $('input[name="newPrice"]').val();
+
+          if (!quantity && !price) {
+             // Prevenir envío y mostrar mensaje (o dejar que el Script Task lo maneje)
+             // alert('Debe ingresar una nueva cantidad o un nuevo precio.');
+             // evt.submitPrevented = true;
+          }
+        });
+        */
+      </script>
+
+    </form>
+  </div>
+</body>
+</html>
