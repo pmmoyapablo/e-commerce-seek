@@ -1,0 +1,44 @@
+server:
+  port: 8080 # Puerto para el BFF
+
+# URLs (o nombres de service discovery) de los microservicios backend
+backend:
+  services:
+    product:
+      url: http://localhost:8081/api/products # URL del servicio de productos (ajustar)
+    inventory:
+      url: http://localhost:8082/api/inventory # URL del servicio de inventario (ajustar)
+
+# Configuración de Resilience4j Circuit Breaker
+resilience4j:
+  circuitbreaker:
+    instances:
+      # Configuración para las llamadas al servicio de productos
+      productService:
+        registerHealthIndicator: true # Expone el estado en /actuator/health
+        slidingWindowType: COUNT_BASED # Basado en las últimas N llamadas
+        slidingWindowSize: 10 # Considera las últimas 10 llamadas
+        failureRateThreshold: 50 # Si 50% o más fallan, abre el circuito
+        waitDurationInOpenState: 10s # Espera 10 segundos antes de pasar a HALF_OPEN
+        permittedNumberOfCallsInHalfOpenState: 3 # Permite 3 llamadas en estado HALF_OPEN
+        automaticTransitionFromOpenToHalfOpenEnabled: true # Transición automática
+        ignoreExceptions: # Excepciones que NO deben contar como fallo
+          - com.example.ecommercebff.exception.ProductNotFoundException
+        recordExceptions: # Excepciones que SÍ deben contar como fallo (además de las no ignoradas)
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException # Importante para RestTemplate
+
+      # Configuración para las llamadas al servicio de inventario
+      inventoryService:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        failureRateThreshold: 60 # Umbral diferente como ejemplo
+        waitDurationInOpenState: 15s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException

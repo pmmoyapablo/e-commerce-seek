@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: transaction-service
+  datasource:
+    url: jdbc:postgresql://db-postgres-transaction:5432/postgres       #jdbc:postgresql://localhost:5550/postgres
+    username: postgres
+    password: postgres
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
+    schemas: transaction_db
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: transaction_db
+  cloud:
+    discovery:
+      enabled: true
+
+  rabbitmq:
+    host: rabbitmq    #localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8000/account-service/token/generate
+          secret-key: YourSecretKeyForJWTTokenGenerationAndValidation1234567890
+
+server:
+  servlet:
+    context-path: /transaction-service
+  port: 8082
+  external:
+    accountUrl: http://account-service:8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8080/eureka/     #http://localhost:8080/eureka/
+    #register-with-eureka: true    # Asegura que el servicio se registre
+    #fetch-registry: true          # Permite descubrir otros servicios
+  instance:
+    prefer-ip-address: true
+    #instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    #hostname: ${spring.cloud.client.hostname}
+    #appname: ${spring.application.name}
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        amqp: DEBUG
+    com:
+      vectora:
+        transactionservice: DEBUG
+
+#Actuator
+management:
+  endpoints:
+    jmx:
+      exposure:
+        include: health,info,env,beans
+    web:
+      exposure:
+        include: health,info,env,beans
