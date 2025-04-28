@@ -1,14 +1,5 @@
-package com.vectora.transactionservice.application.service;
+package com.seek.users.application.service;
 
-import com.vectora.transactionservice.application.port.out.external.ExternalService;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TransactionResponse;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TransactionsRecordResponse;
-import com.vectora.transactionservice.application.port.in.TransactionUseCase;
-import com.vectora.transactionservice.application.port.out.messaging.TransactionEventPublisher;
-import com.vectora.transactionservice.domain.model.Transaction;
-import com.vectora.transactionservice.domain.port.out.TransactionRepositoryPort;
-import com.vectora.transactionservice.domain.event.TransactionEvent;
-import com.vectora.transactionservice.domain.exception.TransactionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Import
@@ -17,10 +8,10 @@ import java.util.List;
 
 @Service // Spring bean
 @RequiredArgsConstructor // Lombok: Constructor con todos los campos final
-public class TransactionServiceImpl implements TransactionUseCase {
-    private final TransactionRepositoryPort transactionRepositoryPort; // Inyección del puerto de salida
-    private final TransactionEventPublisher eventProducer;
-    private final ExternalService externalService;
+public class UserServiceImpl implements UserUseCase {
+    private final UserRepositoryPort transactionRepositoryPort; // Inyección del puerto de salida
+    private final UserEventPublisher eventProducer;
+    private final EmailService externalService;
 
     @Override
     @Transactional // Asegura atomicidad en la creación

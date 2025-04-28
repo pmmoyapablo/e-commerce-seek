@@ -1,8 +1,8 @@
-package com.vectora.transactionservice.infrastructure.adapter.out.persistence;
+package com.seek.users.infrastructure.adapter.out.persistence;
 
-import com.vectora.transactionservice.domain.model.Transaction;
-import com.vectora.transactionservice.infrastructure.adapter.out.persistence.mapper.TransactionMapper;
-import com.vectora.transactionservice.infrastructure.adapter.out.persistence.repository.SpringDataJpaTransactionRepository;
+import com.seek.users.domain.model.Transaction;
+import com.seek.users.infrastructure.adapter.out.persistence.mapper.TransactionMapper;
+import com.seek.users.infrastructure.adapter.out.persistence.repository.SpringDataJpaUserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,20 +14,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
-class JpaTransactionRepositoryAdapterTest {
+class JpaUserRepositoryAdapterTest {
 
     @Autowired
-    private SpringDataJpaTransactionRepository jpaRepository;
+    private SpringDataJpaUserRepository jpaRepository;
 
     @Autowired
     private TransactionMapper transactionMapper;
 
-    private JpaTransactionRepositoryAdapter adapter;
+    private JpaUserRepositoryAdapter adapter;
 
     @Test
     void testSaveTransaction() {
         // Arrange
-        adapter = new JpaTransactionRepositoryAdapter(jpaRepository, transactionMapper);
+        adapter = new JpaUserRepositoryAdapter(jpaRepository, transactionMapper);
         Transaction transaction = new Transaction(1L, 2L, 100.0);
 
         // Act
@@ -44,7 +44,7 @@ class JpaTransactionRepositoryAdapterTest {
     @Test
     void testGetTransactionsByAccount() {
         // Arrange
-        adapter = new JpaTransactionRepositoryAdapter(jpaRepository, transactionMapper);
+        adapter = new JpaUserRepositoryAdapter(jpaRepository, transactionMapper);
         Long accountId = 1L;
 
         // Save some test transactions

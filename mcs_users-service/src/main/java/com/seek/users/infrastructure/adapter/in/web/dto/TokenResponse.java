@@ -1,4 +1,4 @@
-package com.vectora.transactionservice.infrastructure.adapter.in.web.dto;
+package com.seek.users.infrastructure.adapter.in.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

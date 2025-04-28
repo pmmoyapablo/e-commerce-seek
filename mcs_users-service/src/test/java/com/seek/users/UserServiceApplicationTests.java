@@ -1,10 +1,10 @@
-package com.vectora.transactionservice;
+package com.seek.users;
 
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TransactionCreateRequest;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TransactionResponse;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TransactionsRecordResponse;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TokenRequest;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TokenResponse;
+import com.seek.users.infrastructure.adapter.in.web.dto.TransactionCreateRequest;
+import com.seek.users.infrastructure.adapter.in.web.dto.TransactionResponse;
+import com.seek.users.infrastructure.adapter.in.web.dto.TransactionsRecordResponse;
+import com.seek.users.infrastructure.adapter.in.web.dto.TokenRequest;
+import com.seek.users.infrastructure.adapter.in.web.dto.TokenResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // Levanta el contexto completo en puerto
 
-public class TransactionServiceApplicationTests {
+public class UserServiceApplicationTests {
 
     @LocalServerPort
     private int port;
@@ -70,12 +70,12 @@ public class TransactionServiceApplicationTests {
         HttpHeaders headers = createHeadersWithBearerToken(fakeJwtToken);
 
         // --- Crear Cuenta ---
-        TransactionCreateRequest createRequest = new TransactionCreateRequest();
+        UserCreateRequest createRequest = new UserCreateRequest();
         createRequest.setFromAccount(1L);
         createRequest.setFromAccount(2L);
         createRequest.setMonto(500.25);
 
-        HttpEntity<TransactionCreateRequest> createEntity = new HttpEntity<>(createRequest, headers);
+        HttpEntity<UserCreateRequest> createEntity = new HttpEntity<>(createRequest, headers);
 
         ResponseEntity<TransactionResponse> createResponse = restTemplate.postForEntity(
                 "http://localhost:" + port + contextPath + "/transactions",

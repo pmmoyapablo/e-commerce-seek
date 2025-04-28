@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ExternalServiceImpl implements ExternalService {
+public class EmailServiceImpl implements EmailService {
     private TestRestTemplate restTemplate;
 
     @Value("${server.external.accountUrl}")

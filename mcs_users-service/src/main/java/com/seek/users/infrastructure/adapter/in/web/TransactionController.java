@@ -1,10 +1,10 @@
-package com.vectora.transactionservice.infrastructure.adapter.in.web;
+package com.seek.users.infrastructure.adapter.in.web;
 
-import com.vectora.transactionservice.application.port.in.TransactionUseCase;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TransactionCreateRequest;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TransactionResponse;
-import com.vectora.transactionservice.infrastructure.adapter.in.web.dto.TransactionsRecordResponse;
-import com.vectora.transactionservice.infrastructure.adapter.out.persistence.mapper.TransactionMapper; // Usamos el mapper
+import com.seek.users.application.port.in.TransactionUseCase;
+import com.seek.users.infrastructure.adapter.in.web.dto.TransactionCreateRequest;
+import com.seek.users.infrastructure.adapter.in.web.dto.TransactionResponse;
+import com.seek.users.infrastructure.adapter.in.web.dto.TransactionsRecordResponse;
+import com.seek.users.infrastructure.adapter.out.persistence.mapper.TransactionMapper; // Usamos el mapper
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TransactionController {
 
-    private final TransactionUseCase transactionUseCase; // Inyecta el Caso de Uso (Input Port)
+    private final UserUseCase transactionUseCase; // Inyecta el Caso de Uso (Input Port)
     private final TransactionMapper transactionMapper; // Inyecta el Mapper para DTOs
 
     @PostMapping
     // @PreAuthorize("hasAuthority('SCOPE_Transactions:write')") // Ejemplo:
     // Requiere scope JWT específico
-    public ResponseEntity<TransactionResponse> createTransaction(@Valid @RequestBody TransactionCreateRequest request) {
+    public ResponseEntity<TransactionResponse> createTransaction(@Valid @RequestBody UserCreateRequest request) {
         TransactionResponse response = transactionUseCase.createTransaction(request.getFromAccount(),
                 request.getToAccount(), request.getMonto());
         // Devuelve 201 Created con la cuenta creada en el body

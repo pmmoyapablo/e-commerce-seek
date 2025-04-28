@@ -2,14 +2,11 @@ package com.seek.users.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.util.Date;
 import java.util.UUID;
 
-import com.seek.users.domain.exception.UserNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Data // Lombok: getters, setters, toString, equals, hashCode
-@NoArgsConstructor
 @AllArgsConstructor
 public class User {
     private UUID id;
@@ -17,9 +14,26 @@ public class User {
     private String email;
     private String password;
     private String role;
+    
 
-    // Constructor sin ID para creación
-    public User() {
+    public User(String name, String email, String password, String role) {
+        this.id = UUID.randomUUID();
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+
+        validateEmail(email);
+        encryptPassword(password);
     }
 
+    private void validateEmail(String email) {
+        if (!email.contains("@")) {
+            throw new IllegalArgumentException("Email must contain @");
+        }
+    }
+
+    private void encryptPassword(String password) {
+        this.password = new BCryptPasswordEncoder().encode(password);
+    }
 }

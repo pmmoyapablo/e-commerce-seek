@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 class TransactionServiceImplTest {
 
     @Mock
-    private TransactionRepositoryPort transactionRepositoryPort;
+    private UserRepositoryPort transactionRepositoryPort;
 
     @InjectMocks
-    private TransactionServiceImpl transactionService;
+    private UserServiceImpl transactionService;
 
     private Transaction transaction;
 

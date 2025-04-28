@@ -1,10 +1,10 @@
-package com.vectora.transactionservice.infrastructure.adapter.out.persistence;
+package com.seek.users.infrastructure.adapter.out.persistence;
 
-import com.vectora.transactionservice.domain.model.Transaction;
-import com.vectora.transactionservice.domain.port.out.TransactionRepositoryPort;
-import com.vectora.transactionservice.infrastructure.adapter.out.persistence.entity.TransactionEntity;
-import com.vectora.transactionservice.infrastructure.adapter.out.persistence.mapper.TransactionMapper;
-import com.vectora.transactionservice.infrastructure.adapter.out.persistence.repository.SpringDataJpaTransactionRepository;
+import com.seek.users.domain.model.Transaction;
+import com.seek.users.domain.port.out.TransactionRepositoryPort;
+import com.seek.users.infrastructure.adapter.out.persistence.entity.TransactionEntity;
+import com.seek.users.infrastructure.adapter.out.persistence.mapper.TransactionMapper;
+import com.seek.users.infrastructure.adapter.out.persistence.repository.SpringDataJpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component; // O @Repository
 
@@ -13,9 +13,9 @@ import java.util.List;
 
 @Component // Adaptador es un componente Spring
 @RequiredArgsConstructor
-public class JpaTransactionRepositoryAdapter implements TransactionRepositoryPort {
+public class JpaUserRepositoryAdapter implements UserRepositoryPort {
 
-    private final SpringDataJpaTransactionRepository jpaRepository;
+    private final SpringDataJpaUserRepository jpaRepository;
     private final TransactionMapper TransactionMapper; // Inyecta el mapper
 
     @Override

@@ -1,8 +1,8 @@
-package com.vectora.transactionservice.infrastructure.adapter.out.messaging;
+package com.seek.users.infrastructure.adapter.out.messaging;
 
-import com.vectora.transactionservice.application.port.out.messaging.TransactionEventPublisher;
-import com.vectora.transactionservice.domain.event.TransactionEvent;
-import com.vectora.transactionservice.infrastructure.config.RabbitMQConfig;
+import com.seek.users.application.port.out.messaging.UserEventPublisher;
+import com.seek.users.domain.event.UserCreatedEvent;
+import com.seek.users.infrastructure.config.RabbitMQConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RabbitMQTransactionEventPublisher implements TransactionEventPublisher {
+public class RabbitMQUserEventPublisher implements UserEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
     private final MessageConverter messageConverter = new Jackson2JsonMessageConverter();

@@ -1,11 +1,11 @@
-package com.vectora.transactionservice.infrastructure.adapter.in.web.dto;
+package com.seek.users.infrastructure.adapter.in.web.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
-public class AccountValidateRequest {
+public class UserCreateRequest {
     @NotNull(message = "FromAccount cannot be null")
     private Long fromAccount;
 
